@@ -4,6 +4,17 @@ class Rule:
   def __init__(self):
     pass
 
+  def __str__(self):
+    fields = set(dir(self)) - set(dir(Rule()))
+    string = self.__class__.__name__ + '('
+    for field in fields:
+      string = string + field + ' = ' + str(getattr(self, field)) + ', '
+    string = string + ')'
+    return string
+
+  def __repr__(self):
+    return str(self)
+
 class Executor:
   def __init__(self):
     self._rules = {}
@@ -20,12 +31,12 @@ class Executor:
     return self._results
 
   def _CreateRules(self):
-    for constructor in rule_constructors():
+    for constructor in self.rule_constructors():
       func = self._CreateRule(constructor)
       self._rules[constructor.__name__] = func
 
   def _CreateRule(self, constructor):
-    field_names = dir(constructor()) - dir(Rule())
+    field_names = set(dir(constructor())) - set(dir(Rule()))
     def func(**kwargs):
       rule = constructor()
       for name, value in kwargs.items():
