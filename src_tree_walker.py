@@ -8,10 +8,11 @@ class SourceTreeNode:
 
 def WalkDirectory(root):
   children = []
-  for directory in os.listdir(root) if os.path.isdir(directory):
-    os.chdir(directory)
-    children.append(WalkDirectory(directory))
-    os.chdir('..')
+  for directory in os.listdir(root):
+    if os.path.isdir(directory):
+      os.chdir(directory)
+      children.append(WalkDirectory(directory))
+      os.chdir('..')
   return SourceTreeNode(root, children)
 
 def GenerateDirectoryPaths(tree_node):
@@ -28,9 +29,12 @@ def GenerateBuildPaths(directory_paths):
 
 def GetBuildRules(build_paths):
   build_executor = BuildExecutor()
-  build_rules = []
+  build_rules = {}
   for build_path in build_paths:
-    build_rules.extend(build_executor.Execute(build_path))
+    local_rules = build_executor.Execute(build_path)
+    for rule in local_rules:
+      global_name = '//' + build_path + ':' + rule.name
+      build_rules[global_name] = rule
   return build_rules
 
 def GetAllBuildRules(root):
