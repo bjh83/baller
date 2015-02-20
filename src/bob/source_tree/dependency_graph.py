@@ -8,7 +8,7 @@ class DependencyTreeNode:
     if len(self.children) == 0:
       return 1
     else:
-      return max([child.MaxDepth() for child in children]) + 1
+      return max([child.MaxDepth() for child in self.children]) + 1
 
   def ChildrenAtDepth(self, index):
     if index > 0:

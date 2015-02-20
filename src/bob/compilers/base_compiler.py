@@ -66,4 +66,5 @@ class RawCompiler:
     compiler.directory(self._destination)
     compiler.flags(self._flags)
     compiler.args(self._sources + self._deps)
+    print 'Compiling:\n' + '\n'.join(self._sources)
     compiler.Execute()
