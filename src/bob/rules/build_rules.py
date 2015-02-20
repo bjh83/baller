@@ -1,5 +1,5 @@
+from bob.compilers.compiler_impls import CompilerTypes
 from bob.parser.base import Rule, Executor
-from bob.rules.java_rules import *
 
 class BuildExecutor(Executor):
   def rule_constructors(self):
@@ -13,3 +13,17 @@ class RuleBase(Rule):
     self.name = None
     self.srcs = []
     self.deps = []
+    self.flags = []
+    
+class JavaBase(RuleBase):
+  def __init__(self):
+    super(JavaBase, self).__init__()
+
+  def compiler(self):
+    return CompilerTypes.JAVA
+
+class java_library(JavaBase):
+  pass
+
+class java_binary(JavaBase):
+  pass

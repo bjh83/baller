@@ -11,7 +11,7 @@ class ExecuteCommand(object):
     self._args = args
 
   def Execute(self):
-    command_list = [command_name] + self._flags + self._args
+    command_list = [self._command_name] + self._flags + self._args
     command = ' '.join(command_list)
     return_code = subprocess.call(command, shell=True)
 

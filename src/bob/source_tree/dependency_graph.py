@@ -5,7 +5,7 @@ class DependencyTreeNode:
     self.children = children
 
   def MaxDepth(self):
-    if len(children) == 0:
+    if len(self.children) == 0:
       return 1
     else:
       return max([child.MaxDepth() for child in children]) + 1
@@ -20,10 +20,12 @@ class DependencyTreeNode:
 def BuildTree(dependency, build_rules, calculated_dependencies = []):
   # TODO(Brendan): Make better exceptions.
   if dependency not in build_rules:
+    print str(build_rules)
     raise Exception('Build rule: ' + dependency + ' does not exist')
   elif dependency in calculated_dependencies:
     # TODO(Brendan): Give the conflict. (Could be done with a map to the
     # previous user of the dependency.)
+    print str(calculated_dependencies)
     raise Exception('Circular dependency: ' + dependency)
 
   calculated_dependencies.append(dependency)
