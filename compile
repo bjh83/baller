@@ -1,0 +1,8 @@
+#! /bin/bash
+
+if [ ! -f bob.spec ]; then
+  pyinstaller src/bob.py
+fi
+
+rm -rf dist/bob
+pyinstaller bob.spec
