@@ -15,6 +15,3 @@ def main():
 
 def CompilerMapping():
   return GetCompilerMapping({CompilerTypes.JAVA: {}})
-
-if __name__ == "__main__":
-  main()
