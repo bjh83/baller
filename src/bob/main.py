@@ -5,10 +5,15 @@ from bob.source_tree.dependency_graph import BuildTree
 from bob.source_tree.src_tree_walker import GetAllBuildRules
 
 from os import path
+import sys
 
-def main():
+def main(args = sys.argv):
   root_file = 'ROOT'
-  dependency = '//src/main/java/org/bob:hello'
+  if len(args) != 2:
+    print 'Please specify the dependency form path for your build.'
+    return
+  dependency = args[1]
+
   CheckForROOT(root_file)
   root_executor = RootConfigExecutor()
   config = root_executor.Execute(root_file)[0]
