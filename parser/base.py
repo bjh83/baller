@@ -1,11 +1,13 @@
 import __builtin__
 
-class Rule:
+# This class should not be overriden except by RuleBase. It is used to define
+# what fields should be ignored when parsing BUILD files.
+class Rule(object):
   def __init__(self):
     pass
 
   def __str__(self):
-    fields = set(dir(self)) - set(dir(Rule()))
+    fields = self.fields()
     string = self.__class__.__name__ + '('
     for field in fields:
       string = string + field + ' = ' + str(getattr(self, field)) + ', '
@@ -15,6 +17,22 @@ class Rule:
   def __repr__(self):
     return str(self)
 
+  def fields(self):
+    return set(dir(self)) - set(dir(Rule()))
+
+  # Defines the compiler type used for compiling these files.
+  def compiler(self):
+    pass
+
+  def Validate(self):
+    for field in self.fields():
+      if getattr(self, field) is None:
+        raise ValueError(field + ' is required and was not set.')
+
+# This BUILD rule parser. We use python's interpretter as our parser; this works
+# by mapping a Rule (defined above) to a magic method that creates and adds a
+# rule to a list when called. The build rules in a build file are actually calls
+# to these magic methods.
 class Executor:
   def __init__(self):
     self._rules = {}
@@ -36,7 +54,7 @@ class Executor:
       self._rules[constructor.__name__] = func
 
   def _CreateRule(self, constructor):
-    field_names = set(dir(constructor())) - set(dir(Rule()))
+    field_names = constructor().fields()
     def func(**kwargs):
       rule = constructor()
       for name, value in kwargs.items():
@@ -44,6 +62,7 @@ class Executor:
           setattr(rule, name, value)
         else:
           raise AttributeError(constructor.__name__ + " has no attribute '" + name + "'")
+      rule.Validate()
       self._results.append(rule)
     return func
 

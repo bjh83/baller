@@ -5,7 +5,7 @@ class CompilerTypes:
 
 def GetCompilerMapping(compiler_options):
   return {
-      JAVA: JavaCompiler(compiler_options[JAVA])
+      JAVA: JavaCompiler(**compiler_options[JAVA])
   }
 
 class JavaCompiler(Compiler):

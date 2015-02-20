@@ -1,4 +1,4 @@
-from build_rules import BuildExecutor
+from bob.rules.build_rules import BuildExecutor
 import os
 
 class SourceTreeNode:

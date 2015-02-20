@@ -1,13 +1,15 @@
-from base import Rule
+from bob.compilers.compiler_impls import CompilerTypes
+from bob.rules.build_rules import RuleBase
 
-class java_library(Rule):
+class JavaBase(RuleBase):
   def __init__(self):
-    self.name = None
-    self.srcs = []
-    self.deps = []
+    super(self, RuleBase).__init__()
 
-class java_binary(Rule):
-  def __init__(self):
-    self.name = None
-    self.srcs = []
-    self.deps = []
+  def compiler(self):
+    return CompilerTypes.JAVA
+
+class java_library(JavaBase):
+  pass
+
+class java_binary(JavaBase):
+  pass
