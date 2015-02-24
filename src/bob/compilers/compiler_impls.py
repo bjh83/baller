@@ -13,6 +13,10 @@ class JavaCompiler(Compiler):
     self._flags = flags
     self._out_dir = out_dir
 
+  def _CompiledObject(self, rule_path, build_rule):
+    return JavaCompiledObject([source.replace('.java', '.class') \
+        for source in self._GetSources(rule_path, build_rule)])
+
   def _Compiler(self):
     return RawCompiler('javac')
 

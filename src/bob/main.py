@@ -20,10 +20,10 @@ def main(args = sys.argv):
   
   build_rules = GetAllBuildRules(config.src_dir)
   tree = BuildTree(dependency, build_rules)
-  Builder(CompilerMapping()).Build(tree)
+  Builder(CompilerMapping(config)).Build(tree)
 
-def CompilerMapping():
-  return GetCompilerMapping({CompilerTypes.JAVA: {}})
+def CompilerMapping(config):
+  return GetCompilerMapping({CompilerTypes.JAVA: {'out_dir': config.out_dir}})
 
 def CheckForROOT(root_file):
   if not path.isfile(root_file):

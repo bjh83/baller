@@ -4,6 +4,7 @@ class Compiler:
   def __init__(self, flags, out_dir):
     self._flags = flags
     self._out_dir = _out_dir
+    self._out_existing_files = []
 
   def _Compiler(self):
     pass
@@ -13,19 +14,27 @@ class Compiler:
   def _Destination(self, out_dir, raw_compiler):
     pass
 
-  def _Options(self, sources, deps):
+  def _Options(self, rule_path, build_rule):
     return []
+
+  def _CompiledObject(self, rule_path, build_rule):
+    pass
 
   # Many compilers will require a companion object for special options, like
   # C++.
-  def Compile(self, flags, sources, deps):
+  def Compile(self, rule_path, build_rule, dependencies):
     compiler = self._Compiler()
     self._Destination(self._out_dir, compiler)
-    compiler.add_flags(self._flags + flags)
-    compiler.sources(sources)
-    compiler.deps(deps)
-    compiler.options(self._Options(sources, deps))
+    compiler.add_flags(self._flags + build_rule.flags)
+    compiler.sources(self._GetSources(rule_path, build_rule))
+    compiler.deps([path for dep in dependencies for path in dep.paths])
+    compiler.options(self._Options(rule_path, build_rule))
     compiler.Execute()
+    return self._CompiledObject(rule_path, build_rule)
+
+  def _GetSources(self, dep_name, build_rule):
+    rule_path, _ = DecomposeDep(dep_name)
+    return [AbsolutePath(rule_path + os.sep + source) for source in build_rule.srcs]
 
 class RawCompiler:
   def __init__(self, compiler_path):
@@ -68,3 +77,10 @@ class RawCompiler:
     compiler.args(self._sources + self._deps)
     print 'Compiling:\n' + '\n'.join(self._sources)
     compiler.Execute()
+
+def AbsolutePath(local_path):
+  return os.path.abspath(local_path)
+
+def DecomposeDep(dep_name):
+  [path, rule_name] = dep_name.strip('//').split(':')
+  return path, rule_name
