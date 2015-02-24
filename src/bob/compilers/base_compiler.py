@@ -1,7 +1,9 @@
 from bob.commandline.commandline import ExecuteCommandInDirectory
 
+import os
+
 class Compiler:
-  def __init__(self, flags, out_dir):
+  def __init__(self, flags, out_dir, src_dir = 'src'):
     self._flags = flags
     self._out_dir = _out_dir
     self._out_existing_files = []
@@ -20,6 +22,10 @@ class Compiler:
   def _CompiledObject(self, rule_path, build_rule):
     pass
 
+  # Compilers have different methods of passing in dependencies.
+  def _AddDependencies(self, dependencies, raw_compiler):
+    pass
+
   # Many compilers will require a companion object for special options, like
   # C++.
   def Compile(self, rule_path, build_rule, dependencies):
@@ -27,7 +33,7 @@ class Compiler:
     self._Destination(self._out_dir, compiler)
     compiler.add_flags(self._flags + build_rule.flags)
     compiler.sources(self._GetSources(rule_path, build_rule))
-    compiler.deps([path for dep in dependencies for path in dep.paths])
+    self._AddDependencies(dependencies, compiler)
     compiler.options(self._Options(rule_path, build_rule))
     compiler.Execute()
     return self._CompiledObject(rule_path, build_rule)

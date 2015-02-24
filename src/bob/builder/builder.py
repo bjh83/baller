@@ -21,7 +21,7 @@ class Builder:
   def BuildRule(self, rule_path, build_rule):
     compiler = self._GetCompiler(build_rule)
     dependencies = self._GetDependencies(build_rule)
-    compiled_rules = compiler.Compile(flags, sources, dependencies)
+    compiled_rules = compiler.Compile(rule_path, build_rule, dependencies)
     self._compiled_rules[rule_path] = compiled_rules
 
   def _GetDependencies(self, build_rule):

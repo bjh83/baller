@@ -13,6 +13,7 @@ class ExecuteCommand(object):
   def Execute(self):
     command_list = [self._command_name] + self._flags + self._args
     command = ' '.join(command_list)
+    print command
     return_code = subprocess.call(command, shell=True)
 
 class ExecuteContextualCommand(ExecuteCommand):
