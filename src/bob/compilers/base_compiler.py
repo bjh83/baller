@@ -2,10 +2,11 @@ from bob.commandline.commandline import ExecuteCommandInDirectory
 
 import os
 
-class Compiler:
-  def __init__(self, flags, out_dir, src_dir = 'src'):
+class Compiler(object):
+  def __init__(self, flags, src_dir = 'src', out_dir = 'out'):
     self._flags = flags
-    self._out_dir = _out_dir
+    self._src_dir = src_dir
+    self._out_dir = out_dir
     self._out_existing_files = []
 
   def _Compiler(self):

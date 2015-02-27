@@ -4,3 +4,8 @@ class CompiledObject(object):
 
 class JavaCompiledObject(CompiledObject):
   pass
+
+class CppCompiledObject(CompiledObject):
+  def __init__(self, hdrs, objs):
+    self.hdrs = hdrs
+    self.objs = objs

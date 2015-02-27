@@ -3,7 +3,7 @@ from bob.parser.base import Rule, Executor
 
 class BuildExecutor(Executor):
   def rule_constructors(self):
-    return [java_library, java_binary]
+    return [java_library, java_binary, cc_library, cc_binary]
 
 # All build rule implementations should inherit from this instead of Rule. This
 # is because all rules should have the fields declared below. Rule itself
@@ -26,4 +26,18 @@ class java_library(JavaBase):
   pass
 
 class java_binary(JavaBase):
+  pass
+
+class CCBase(RuleBase):
+  def __init__(self):
+    super(CCBase, self).__init__()
+    self.hdrs = []
+
+  def compiler(self):
+    return CompilerTypes.CPP
+
+class cc_library(CCBase):
+  pass
+
+class cc_binary(CCBase):
   pass

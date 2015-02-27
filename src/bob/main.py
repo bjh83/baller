@@ -23,7 +23,10 @@ def main(args = sys.argv):
   Builder(CompilerMapping(config)).Build(tree)
 
 def CompilerMapping(config):
-  return GetCompilerMapping({CompilerTypes.JAVA: {'out_dir': config.out_dir}})
+  return GetCompilerMapping({
+    CompilerTypes.JAVA: {'out_dir': config.out_dir},
+    CompilerTypes.CPP: {},
+    })
 
 def CheckForROOT(root_file):
   if not path.isfile(root_file):
