@@ -40,4 +40,5 @@ class cc_library(CCBase):
   pass
 
 class cc_binary(CCBase):
-  pass
+  def is_binary(self):
+    return True

@@ -24,6 +24,9 @@ class Rule(object):
   def compiler(self):
     pass
 
+  def is_binary(self):
+    return False
+
   def Validate(self):
     for field in self.fields():
       if getattr(self, field) is None:

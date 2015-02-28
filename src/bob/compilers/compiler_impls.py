@@ -82,12 +82,33 @@ class CPPCompiler(Compiler):
     raw_compiler = self._Compiler()
     raw_compiler.flags([])
     raw_compiler.args(['-c', source, '-o', obj_name])
+    raw_compiler.Execute()
+
+  def _Link(self, name, objs):
+    compiler = self._Compiler()
+    compiler.flags([])
+    compiler.args([' '.join(objs), '-o', name])
+    compiler.Execute()
+
+  def Link(self, rule_path, build_rule, dependencies, obj):
+    objs = obj.objs
+    AddObjects(build_rule.deps, dependencies, objs)
+    self._Link(build_rule.name, set(objs))
 
   def Compile(self, rule_path, build_rule, dependencies):
     compiler = self._Compiler()
     for src in self._GetSources(rule_path, build_rule):
       self._CompileSource(src)
-    return self._CompiledObject(rule_path, build_rule)
+    obj = self._CompiledObject(rule_path, build_rule)
+    if build_rule.is_binary():
+      self.Link(rule_path, build_rule, dependencies, obj)
+    return obj
+
+def AddObjects(dependencies, dep_map, objs):
+  for dep in dependencies:
+    dep = dep_map[dep]
+    objs.extend(dep.objs)
+    AddObjects(dep.deps, dep_map, objs)
 
 def GenerateDirectoryForObject(full_path):
   path = os.path.dirname(full_path)
