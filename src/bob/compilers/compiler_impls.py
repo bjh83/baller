@@ -1,3 +1,4 @@
+from bob.commandline.commandline import ExecuteCommand
 from bob.compilers.base_compiler import Compiler, RawCompiler, AbsolutePath, DecomposeDep
 from bob.compiled_objects.compiled_objects import JavaCompiledObject, CppCompiledObject
 
@@ -63,9 +64,32 @@ class CPPCompiler(Compiler):
 
   # TODO(Brendan): Should be able to change the compiler path.
   def _Compiler(self):
-    return RawCompiler('g++')
+    return ExecuteCommand('g++')
 
   # TODO(Brendan): We should probably set the destination to the full path of
   # the source to be compiled.
   def _Destination(self, out_dir, raw_compiler):
     raw_compiler.destination(out_dir)
+
+  def _ObjectName(self, source):
+    src_path = AbsolutePath(self._src_dir)
+    out_path = AbsolutePath(self._out_dir)
+    return source.replace('.cc', '.o').replace(src_path, out_path)
+
+  def _CompileSource(self, source):
+    obj_name = self._ObjectName(source)
+    GenerateDirectoryForObject(obj_name)
+    raw_compiler = self._Compiler()
+    raw_compiler.flags([])
+    raw_compiler.args(['-c', source, '-o', obj_name])
+
+  def Compile(self, rule_path, build_rule, dependencies):
+    compiler = self._Compiler()
+    for src in self._GetSources(rule_path, build_rule):
+      self._CompileSource(src)
+    return self._CompiledObject(rule_path, build_rule)
+
+def GenerateDirectoryForObject(full_path):
+  path = os.path.dirname(full_path)
+  if not os.path.isdir(path):
+    os.makedirs(path)
